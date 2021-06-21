@@ -1,68 +1,57 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Image based tracking AR.js demo</title>
-    <!-- import aframe and then ar.js with image tracking / location based features -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project</title>
+
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script type="text/javascript" src="cordova.js"></script> //only needed for phonegap
+    <script src="https://unpkg.com/aframe-event-set-component@4.2.1/dist/aframe-event-set-component.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script></script>
+    <script type="text/javascript">
+    AFRAME.registerComponent('cursor-listener', {
+      init: function () {
+          this.el.addEventListener('click', function (evt) {
+            document.querySelector('a-scene').sceneEl.querySelector("#wearlensesAnimation").setAttribute('visible', "true");
+            document.querySelector('a-scene').sceneEl.querySelector("#wearlensesAnimation").setAttribute('animation-mixer','loop','once');
+            document.querySelector('a-scene').sceneEl.querySelector("#Transformer").setAttribute('autoplay', "true");
+            document.querySelector('a-scene').sceneEl.querySelector("#boxId").setAttribute('visible', "false");
+            document.querySelector('a-scene').sceneEl.querySelector("#packText").setAttribute('visible', "false");
+            document.querySelector('a-scene').sceneEl.querySelector("#wearlensesStatic").setAttribute('visible', "false");
+        });
+        }
+      });
+    </script>
 
-    <!-- style for the loader -->
-    <style>
-      .arjs-loader {
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        background-color: rgba(0, 0, 0, 0.8);
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+</head>
+<body>
+    <a-scene cursor-listener id="scene1" embedded arjs=’sourceType: webcam;’>
+      <a-assets timeout=30000>
+        <a-asset-item id="wearlenses_static" src="assets/static/wearlenses_static.gltf"></a-asset-item>
+        <a-asset-item id="wearlenses_animation" src="assets/animation/wearlenses_with_animation.gltf"></a-asset-item>
+        <audio id="Transformer" src="url(assets/Transformer.mp3)"></audio>
+      </a-assets>
+            
+    <a-box id="boxId" visible="true" color="green" position="-2 -5 -35" height="2" width="3"></a-box>
+            
+    <a-entity id="packText" visible="true" position="4.5 -5 -35" scale="15 15 15" text="value: PACK;color:black"></a-entity>
 
-      .arjs-loader div {
-        text-align: center;
-        font-size: 1.25em;
-        color: white;
-      }
-    </style>
-  </head>
+    <a-entity id="wearlensesStatic" position="-.7 1 -3" visible="true" gltf-model="#wearlenses_static"
+      scale="3 3 3" #wearlensesAnimation.visible="true"></a-entity>
 
-  <body style="margin : 0px; overflow: hidden;">
-    <!-- minimal loader shown until image descriptors are loaded. Loading may take a while according to the device computational power -->
-    <div class="arjs-loader">
-      <div>Loading, please wait...</div>
-    </div>
-
-    <!-- a-frame scene -->
-    <a-scene
-      vr-mode-ui="enabled: false;"
-      renderer="logarithmicDepthBuffer: true;"
-      embedded
-      arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
-      <!-- a-nft is the anchor that defines an Image Tracking entity -->
-      <!-- on 'url' use the path to the Image Descriptors created before. -->
-      <!-- the path should end with the name without the extension e.g. if file is trex.fset' the path should end with trex -->
-      <a-nft
-        type="nft"
-        url="arjs3-image-tracking"
-        smooth="true"
-        smoothCount="10"
-        smoothTolerance=".01"
-        smoothThreshold="5">
-          <!-- as a child of the a-nft entity, you can define the content to show. here's a GLTF model entity -->
-          <a-entity
-          gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
+    <a-light type="ambient" color="white"></a-light>
+            
+    <a-light type="point" intensity="2" position="-.7 1 -3"></a-light>
+    
+    <a-entity play-animation2 id="wearlensesAnimation" gltf-model="#wearlenses_animation" visible="false"
+              position="-.5 1.5 -5" 
+              rotation="0 0 0" 
               scale="5 5 5"
-              position="100 100 0"
-          >
-          </a-entity>
-      </a-nft>
-      <!-- static camera that moves according to the device movemenents -->
-      <a-entity camera></a-entity>
+              animation-mixer="loop: once; clampWhenFinished: true;"
+              shadow="cast: true; receive: false"> 
+      <a-sound src="#Transformer"></a-sound>
+    </a-entity>      
     </a-scene>
-  </body>
+</body>
 </html>
